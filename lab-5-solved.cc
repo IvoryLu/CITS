@@ -20,6 +20,35 @@ using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE ("WifiSimpleAdhocGrid");
 
+uint32_t MacTxDropCount, PhyTxDropCount, PhyRxDropCount;
+
+void
+MacTxDrop(Ptr<const Packet> p)
+{
+  NS_LOG_INFO("Packet Drop");
+  MacTxDropCount++;
+}
+
+void
+PrintDrop()
+{
+  std::cout << Simulator::Now().GetSeconds() << "\t" << MacTxDropCount << "\t"<< PhyTxDropCount << "\t" << PhyRxDropCount << "\n";
+  Simulator::Schedule(Seconds(5.0), &PrintDrop);
+}
+
+void
+PhyTxDrop(Ptr<const Packet> p)
+{
+  NS_LOG_INFO("Packet Drop");
+  PhyTxDropCount++;
+}
+void
+PhyRxDrop(Ptr<const Packet> p)
+{
+  NS_LOG_INFO("Packet Drop");
+  PhyRxDropCount++;
+}
+
 void ReceivePacket (Ptr<Socket> socket)
 {
 	while (socket-> Recv ())
