@@ -22,28 +22,24 @@ NS_LOG_COMPONENT_DEFINE ("WifiSimpleAdhocGrid");
 
 uint32_t MacTxDropCount, PhyTxDropCount, PhyRxDropCount;
 
-void
-MacTxDrop(Ptr<const Packet> p)
+void MacTxDrop(Ptr<const Packet> p)
 {
   NS_LOG_INFO("Packet Drop");
   MacTxDropCount++;
 }
 
-void
-PrintDrop()
+void PrintDrop()
 {
   std::cout << Simulator::Now().GetSeconds() << "\t" << MacTxDropCount << "\t"<< PhyTxDropCount << "\t" << PhyRxDropCount << "\n";
   Simulator::Schedule(Seconds(5.0), &PrintDrop);
 }
 
-void
-PhyTxDrop(Ptr<const Packet> p)
+void PhyTxDrop(Ptr<const Packet> p)
 {
   NS_LOG_INFO("Packet Drop");
   PhyTxDropCount++;
 }
-void
-PhyRxDrop(Ptr<const Packet> p)
+void PhyRxDrop(Ptr<const Packet> p)
 {
   NS_LOG_INFO("Packet Drop");
   PhyRxDropCount++;
@@ -222,8 +218,8 @@ int main(int argc, char *argv[])
 	Ptr<FlowMonitor> monitor = flowmon.InstallAll();
 
 	//Trace Collisions
-	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Mac/MacTxDrop", MakeCallback(&MacTxDrop));
-	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyRxDrop", MakeCallback(&MacRxDrop));
+	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Mac/MacTxDrop", MakeCallback(&MacTxDrop));	
+	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyRxDrop", MakeCallback(&PhyRxDrop));
 	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyTxDrop", MakeCallback(&PhyTxDrop));	
 	/*
 	TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
