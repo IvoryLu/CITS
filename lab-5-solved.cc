@@ -185,7 +185,8 @@ int main(int argc, char *argv[])
     	PacketSinkHelper packetSinkHelper2 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), sinkPort));
    	 ApplicationContainer sinkApps2 = packetSinkHelper2.Install (c.Get (14)); //n14 as sink
     	sinkApps2.Start (Seconds (0.));
-    	sinkApps2.Stop (Seconds (100.));
+
+	sinkApps2.Stop (Seconds (100.));
 	
 	Ptr<Socket> ns3UdpSocket2 = Socket::CreateSocket (c.Get (10), UdpSocketFactory::GetTypeId ()); //source at n10
 	
@@ -194,7 +195,8 @@ int main(int argc, char *argv[])
     	app2->Setup (ns3UdpSocket2, sinkAddress2, packetSize, numPackets, DataRate ("1Mbps"));
     	c.Get (10)->AddApplication (app2);
     	app2->SetStartTime (Seconds (31.5));
-    	app2->SetStopTime (Seconds (100.));
+
+	app2->SetStopTime (Seconds (100.));
 
 	// UDP connection from N20 to N4
 
@@ -221,6 +223,38 @@ int main(int argc, char *argv[])
 	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Mac/MacTxDrop", MakeCallback(&MacTxDrop));	
 	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyRxDrop", MakeCallback(&PhyRxDrop));
 	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyTxDrop", MakeCallback(&PhyTxDrop));	
+	
+	Simulator::Schedule(Seconds(5.0), &PrintDrop);
+
+  	Simulator::Stop (Seconds (100.0));
+  	Simulator::Run ();
+
+  	PrintDrop();
+
+  	// Print per flow statistics
+ 	monitor->CheckForLostPackets ();
+  	Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier ());
+  	std::map<FlowId, FlowMonitor::FlowStats> stats = monitor->GetFlowStats ();
+
+  	for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator iter = stats.begin (); iter != stats.end (); ++iter)
+    	{
+	  	Ipv4FlowClassifier::FiveTuple t = classifier->FindFlow (iter->first);
+
+      		if ((t.sourceAddress == Ipv4Address("10.1.1.1") && t.destinationAddress == Ipv4Address("10.1.1.25"))
+    		|| (t.sourceAddress == Ipv4Address("10.1.1.11") && t.destinationAddress == Ipv4Address("10.1.1.15"))
+    		|| (t.sourceAddress == Ipv4Address("10.1.1.21") && t.destinationAddress == Ipv4Address("10.1.1.5")))
+        	{
+    	  		NS_LOG_UNCOND("Flow ID: " << iter->first << " Src Addr " << t.sourceAddress << " Dst Addr " << t.destinationAddress);
+    	  		NS_LOG_UNCOND("Tx Packets = " << iter->second.txPackets);
+    	  		NS_LOG_UNCOND("Rx Packets = " << iter->second.rxPackets);
+    	  		NS_LOG_UNCOND("Throughput: " << iter->second.rxBytes * 8.0 / (iter->second.timeLastRxPacket.GetSeconds()-iter->second.timeFirstTxPacket.GetSeconds()) / 1024  << " Kbps");
+        	}
+    	}
+ 	monitor->SerializeToXmlFile("lab-5.flowmon", true, true);
+
+  	Simulator::Destroy ();
+
+  	return 0;
 	/*
 	TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
 	Ptr<Socket> recvSink = Socket::CreateSocket (c.Get (sinkNode), tid);
