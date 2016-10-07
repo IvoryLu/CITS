@@ -156,8 +156,38 @@ int main(int argc, char *argv[])
 	app1->SetStopTime (Seconds (100.));
 
 	//UDP connection from N10 to N14
+	 Address sinkAddress2 (InetSocketAddress (ifcont.GetAddress (14), sinkPort)); // interface of n14
+    	PacketSinkHelper packetSinkHelper2 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), sinkPort));
+   	 ApplicationContainer sinkApps2 = packetSinkHelper2.Install (c.Get (14)); //n14 as sink
+    	sinkApps2.Start (Seconds (0.));
+    	sinkApps2.Stop (Seconds (100.));
 	
+	Ptr<Socket> ns3UdpSocket2 = Socket::CreateSocket (c.Get (10), UdpSocketFactory::GetTypeId ()); //source at n10
+	
+	//Create UDP application at n10
+	Ptr<MyApp> app2 = CreateObject<MyApp> ();
+    	app2->Setup (ns3UdpSocket2, sinkAddress2, packetSize, numPackets, DataRate ("1Mbps"));
+    	c.Get (10)->AddApplication (app2);
+    	app2->SetStartTime (Seconds (31.5));
+    	app2->SetStopTime (Seconds (100.));
 
+	// UDP connection from N20 to N4
+
+     	Address sinkAddress3 (InetSocketAddress (ifcont.GetAddress (4), sinkPort)); // interface of n4
+     	PacketSinkHelper packetSinkHelper3 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), sinkPort));
+     	ApplicationContainer sinkApps3 = packetSinkHelper3.Install (c.Get (4)); //n2 as sink
+     	sinkApps3.Start (Seconds (0.));
+     	sinkApps3.Stop (Seconds (100.));
+
+     	Ptr<Socket> ns3UdpSocket3 = Socket::CreateSocket (c.Get (20), UdpSocketFactory::GetTypeId ()); //source at n20
+
+     	// Create UDP application at n20
+     	Ptr<MyApp> app3 = CreateObject<MyApp> ();
+     	app3->Setup (ns3UdpSocket3, sinkAddress3, packetSize, numPackets, DataRate ("1Mbps"));
+     	c.Get (20)->AddApplication (app3);
+     	app3->SetStartTime (Seconds (32.));
+     	app3->SetStopTime (Seconds (100.));
+	
 	/*
 	TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
 	Ptr<Socket> recvSink = Socket::CreateSocket (c.Get (sinkNode), tid);
