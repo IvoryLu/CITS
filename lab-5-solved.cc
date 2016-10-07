@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 	app1->SetStopTime (Seconds (100.));
 
 	//UDP connection from N10 to N14
-	 Address sinkAddress2 (InetSocketAddress (ifcont.GetAddress (14), sinkPort)); // interface of n14
+	 Address sinkAddress2 (InetSocketAddress (i.GetAddress (14), sinkPort)); // interface of n14
     	PacketSinkHelper packetSinkHelper2 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), sinkPort));
    	 ApplicationContainer sinkApps2 = packetSinkHelper2.Install (c.Get (14)); //n14 as sink
     	sinkApps2.Start (Seconds (0.));
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 
 	// UDP connection from N20 to N4
 
-     	Address sinkAddress3 (InetSocketAddress (ifcont.GetAddress (4), sinkPort)); // interface of n4
+     	Address sinkAddress3 (InetSocketAddress (i.GetAddress (4), sinkPort)); // interface of n4
      	PacketSinkHelper packetSinkHelper3 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), sinkPort));
      	ApplicationContainer sinkApps3 = packetSinkHelper3.Install (c.Get (4)); //n2 as sink
      	sinkApps3.Start (Seconds (0.));
@@ -188,6 +188,14 @@ int main(int argc, char *argv[])
      	app3->SetStartTime (Seconds (32.));
      	app3->SetStopTime (Seconds (100.));
 	
+	//Install FlowMonitor on all nodes
+	FlowMonitorHelper flowmon;
+	Ptr<FlowMonitor> monitor = flowmon.InstallAll();
+
+	//Trace Collisions
+	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Mac/MacTxDrop", MakeCallback(&MacTxDrop));
+	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyRxDrop", MakeCallback(&MacRxDrop));
+	Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyTxDrop", MakeCallback(&PhyTxDrop));	
 	/*
 	TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
 	Ptr<Socket> recvSink = Socket::CreateSocket (c.Get (sinkNode), tid);
