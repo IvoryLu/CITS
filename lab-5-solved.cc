@@ -7,6 +7,9 @@
 #include "ns3/olsr-helper.h"
 #include "ns3/ipv4-static-routing-helper.h"
 #include "ns3/ipv4-list-routing-helper.h"
+#include "ns3/flow-monitor-module.h"
+#include "ns3/applications-module.h"
+#include "myapp.h"
     
 #include <iostream>
 #include <fstream>
@@ -45,9 +48,9 @@ int main(int argc, char *argv[])
 	uint32_t packetSize = 1000;	//bytes
 	uint32_t numPackets = 1;
 	uint32_t numNodes = 25;
-	uint32_t sinkNode = 0;
-	uint32_t source Node = 24;
-	double interval = 1.0	//seconds
+	uint32_t sinkNode = 1;
+	uint32_t sourceNode = 24;
+	double interval = 1.0;	//seconds
 	bool verbose = false;
 	bool tracing = false;
 	
@@ -132,6 +135,30 @@ int main(int argc, char *argv[])
 	ipv4.SetBase ("10.1.1.0", "255.255.255.0");
 	Ipv4InterfaceContainer i = ipv4.Assign (devices);
 
+	//Create Apps
+	uint16_t sinkPort = 6;	//use the same for all apps
+
+	//UPD connection from N0 to N24
+
+	Address sinkAddress1 (InetSocketAddress (i.GetAddress(24), sinkPort));// interface of n24
+	PacketSinkHelper packetSinkHelper1 ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny(), sinkPort));
+	ApplicationContainer sinkApps1 = packetSinkHelper1.Install (c.Get(24));
+	sinkApps1.Start (Seconds (0.));
+	sinkApps1.Stop (Seconds (100.));
+	
+	Ptr<Socket> source1 = Socket::CreateSocket (c.Get (0), UdpSocketFactory::GetTypeId());//Source at n0
+
+	//Create UDP application at n0
+	Ptr<MyApp> app1 = CreateObject<MyApp> ();
+	app1->Setup (source1, sinkAddress1, packetSize, numPackets, DataRate ("1Mbps"));
+	c.Get (0)->AddApplication (app1);
+	app1->SetStartTime (Seconds (31.));
+	app1->SetStopTime (Seconds (100.));
+
+	//UDP connection from N10 to N14
+	
+
+	/*
 	TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
 	Ptr<Socket> recvSink = Socket::CreateSocket (c.Get (sinkNode), tid);
 	InetSocketAddress local = InetSocketAddress (Ipv4Address::GetAny (), 80);
@@ -141,6 +168,7 @@ int main(int argc, char *argv[])
 	Ptr<Socket> source = Socket::CreateSocket (c.Get (sourceNode), tid);
 	InetSocketAddress remote = InetSocketAddress (i.GetAddress (sinkNode, 0), 80);
 	source->Connect (remote);
+	*/
 
 	if(tracing == true)
 	{}
