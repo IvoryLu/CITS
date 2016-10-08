@@ -247,10 +247,13 @@ int main(int argc, char *argv[])
     		|| (t.sourceAddress == Ipv4Address("10.1.1.11") && t.destinationAddress == Ipv4Address("10.1.1.15"))
     		|| (t.sourceAddress == Ipv4Address("10.1.1.21") && t.destinationAddress == Ipv4Address("10.1.1.5")))
         	{
-    	  		NS_LOG_UNCOND("Flow ID: " << iter->first << " Src Addr " << t.sourceAddress << " Dst Addr " << t.destinationAddress);
+    	  		NS_LOG_UNCOND("Flow ID: " << iter->first << " Src Addr " << t.sourceAddress << " Dst Addr " 
+				      << t.destinationAddress);
     	  		NS_LOG_UNCOND("Tx Packets = " << iter->second.txPackets);
     	  		NS_LOG_UNCOND("Rx Packets = " << iter->second.rxPackets);
-    	  		NS_LOG_UNCOND("Throughput: " << iter->second.rxBytes * 8.0 / (iter->second.timeLastRxPacket.GetSeconds()-iter->second.timeFirstTxPacket.GetSeconds()) / 1024  << " Kbps");
+    	  		NS_LOG_UNCOND("Throughput: " << iter->second.rxBytes * 8.0 / 
+				      (iter->second.timeLastRxPacket.GetSeconds()-iter->second.timeFirstTxPacket.GetSeconds()) /
+				      1024  << " Kbps");
         	}
     	}
  	monitor->SerializeToXmlFile("lab-5.flowmon", true, true);
