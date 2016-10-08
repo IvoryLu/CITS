@@ -256,26 +256,11 @@ int main(int argc, char *argv[])
 				      1024  << " Kbps");
         	}
     	}
- 	monitor->SerializeToXmlFile("lab-5.flowmon", true, true);
+ 	monitor->SerializeToXmlFile("project1.flowmon", true, true);
 
   	Simulator::Destroy ();
 
   	return 0;
-	/*
-	TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
-	Ptr<Socket> recvSink = Socket::CreateSocket (c.Get (sinkNode), tid);
-	InetSocketAddress local = InetSocketAddress (Ipv4Address::GetAny (), 80);
-	recvSink->Bind (local);
-	recvSink->SetRecvCallback (MakeCallback (&ReceivePacket));
 	
-	Ptr<Socket> source = Socket::CreateSocket (c.Get (sourceNode), tid);
-	InetSocketAddress remote = InetSocketAddress (i.GetAddress (sinkNode, 0), 80);
-	source->Connect (remote);
-	*/
-
-	if(tracing == true)
-	{}
-
-
 }
 
