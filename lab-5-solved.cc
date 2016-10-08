@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 		wifi.EnableLogComponents ();  // Turn on all Wifi logging
 	}
 
-	YansWifiPhyHelper wifiPhy =  YansWifiPhyHelper::Default ();
+	YansWifiPhyHelper wifiPhy =  YansWifiPhyHelper::Default (); //Create a phy helper in a default working state
 	// set it to zero; otherwise, gain will be added
 	wifiPhy.Set ("RxGain", DoubleValue (-10) );
 	// ns-3 supports RadioTap and Prism tracing extensions for 802.11b
