@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 	//Set it to adhov mode
 	wifiMac.SetType ("ns3::AdhocWifiMac");
 	NetDeviceContainer devices = wifi.Install (wifiPhy, wifiMac, c);
-	
+		
 	MobilityHelper mobility;
 	mobility.SetPositionAllocator ("ns3::GridPositionAllocator",
 					"MinX",DoubleValue (0.0),
@@ -146,12 +146,12 @@ int main(int argc, char *argv[])
 	mobility.Install (c);
 	
 	// Enable OLSR
-	OlsrHelper olsr;
+	OlsrHelper olsr;    
 	Ipv4StaticRoutingHelper staticRouting;
 	
 	Ipv4ListRoutingHelper list;
-	list.Add (staticRouting, 0);
-	list.Add (olsr, 10);
+	list.Add (staticRouting, 0);    //Parameters: routing and priority	
+	list.Add (olsr, 10);    //rouing: a rouing helper    priority: the priority of the associated helper
 
 	InternetStackHelper internet;
 	internet.SetRoutingHelper (list); // has effect on the next Install ()
