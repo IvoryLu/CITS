@@ -63,17 +63,17 @@ static void GenerateTraffic (Ptr<Socket> socket, uint32_t pktSize, uint32_t pktC
 	else
 	{
 		socket->Close ();
-	}
+/	}
 }
 
 int main(int argc, char *argv[])
-{
+/{
 
 	std::string phyMode("DsssRate1Mbps");
 	double distance = 500;	//m
 	uint32_t packetSize = 1000;	//bytes
 	uint32_t numPackets = 1;
-	uint32_t numNodes = 25;
+/	uint32_t numNodes = 25;
 	uint32_t sinkNode = 1;
 	uint32_t sourceNode = 24;
 	double interval = 1.0;	//seconds
@@ -99,9 +99,10 @@ int main(int argc, char *argv[])
 	Time interPacketInterval = Seconds (interval);
 	
 	//disable fragmentation for frames below 2200 bytes
-	Config::SetDefault ("ns3::WifiRemoteStationManager::FragmentationThreshold", StringValue ("2200"));
+	//Config::SetDefault ("ns3::WifiRemoteStationManager::FragmentationThreshold", StringValue ("2200"));
 	// turn off RTS/CTS for frames below 2200 bytes
-	Config::SetDefault ("ns3::WifiRemoteStationManager::RtsCtsThreshold", StringValue ("2200"));
+	//Config::SetDefault ("ns3::WifiRemoteStationManager::RtsCtsThreshold", StringValue ("2200"));
+	Config::SetDefault ("ns3::WifiRemoteStationManager::RtsCtsThreshold", StringValue(rtslimit));
 	// Fix non-unicast data rate to be the same as that of unicast
 	Config::SetDefault ("ns3::WifiRemoteStationManager::NonUnicastMode", StringValue (phyMode));
 
