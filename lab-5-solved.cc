@@ -160,7 +160,8 @@ int main(int argc, char *argv[])
 	Ipv4AddressHelper ipv4;
 	NS_LOG_INFO ("Assign IP Addresses.");
 	ipv4.SetBase ("10.1.1.0", "255.255.255.0");   //Set the base network number, network mask.
-	Ipv4InterfaceContainer i = ipv4.Assign (devices);
+	Ipv4InterfaceContainer i = ipv4.Assign (devices);    //Assign IP addresses to the net devices specified in the
+							     //container based on the current network prefix and address base.
 
 	//Create Apps
 	uint16_t sinkPort = 6;	//use the same for all apps
