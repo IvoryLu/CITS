@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 
 	Ipv4AddressHelper ipv4;
 	NS_LOG_INFO ("Assign IP Addresses.");
-	ipv4.SetBase ("10.1.1.0", "255.255.255.0");
+	ipv4.SetBase ("10.1.1.0", "255.255.255.0");   //Set the base network number, network mask.
 	Ipv4InterfaceContainer i = ipv4.Assign (devices);
 
 	//Create Apps
