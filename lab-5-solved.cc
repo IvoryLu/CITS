@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	std::string phyMode("DsssRate1Mbps");
 	double distance = 500;	//m
 	uint32_t packetSize = 1000;	//bytes
-	uint32_t numPackets = 1;
+	uint32_t numPackets = 1000;
 	uint32_t numNodes = 25;
 	uint32_t sinkNode = 1;
 	uint32_t sourceNode = 24;
