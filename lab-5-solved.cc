@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 	uint32_t sinkNode = 1;
 	uint32_t sourceNode = 24;
 	double interval = 1.0;	//seconds
-	std::string rtslimit = "1500";
+	std::string rtslimit = "500";
 	bool verbose = false;
 	bool tracing = false;
 	
